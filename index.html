@@ -10,6 +10,7 @@
   </body>
 
   <script src="js/three.min.js"></script>
+  <script src="js/OrbitControls.js"></script>
 
   <script type="x-shader/x-vertex" id="vertexShader">
   vec3 mod289(vec3 x)
@@ -178,6 +179,7 @@
 
   varying vec2 vUv;
   varying float noise;
+  uniform float time;
 
   float turbulence(vec3 val) {
     float weight = 100.0;
@@ -191,9 +193,9 @@
 
   void main() {
     vUv = uv;
-    noise = 10.0 * -.10 * turbulence(.5 * normal);
-    float beta = 5.0 * pnoise(0.05 * position, vec3(100.0));
-    float disp = -noise + beta;
+    noise = 10.0 * -.10 * turbulence(.5 * normal + time);
+    float beta = 5.0 * pnoise(0.05 * position + vec3(2.0 * time), vec3(100.0));
+    float disp = - noise + beta;
     vec3 newPosition = position + normal * disp;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
   }
@@ -203,9 +205,17 @@
   <script type="x-shader/x-vertex" id="fragShader">
   varying vec2 vUv;
   varying float noise;
+  uniform sampler2D tSample;
+
+  float random(vec3 scale, float seed) {
+    return fract(sin(dot(gl_FragCoord.xyz + seed, scale)) * 42375.2313 + seed);
+  }
 
   void main() {
-    vec3 color = vec3(vUv * (1. - 2. * noise), 0.0);
+    float r = .01 * random(vec3(12.9412, 87.231, 143.2233), 0.0);
+    vec2 textPos = vec2(0., 1.3 * noise + r);
+    //vec3 color = vec3(vUv * (1. - 2. * noise), 0.0);
+    vec4 color = texture2D(tSample, textPos);
     gl_FragColor = vec4(color.rgb, 1.0);
   }
   </script>
@@ -230,6 +240,16 @@
     );
     camera.position.z = 100;
     material = new THREE.ShaderMaterial({
+      uniforms: {
+        tSample: {
+          type: "t",
+          value: THREE.ImageUtils.loadTexture('explosion.png')
+        },
+        time: {
+          type: "f",
+          value: 0.0
+        }
+      },
       vertexShader: document.getElementById('vertexShader').textContent,
       fragmentShader: document.getElementById('fragShader').textContent
     });
@@ -245,12 +265,22 @@
     renderer.setPixelRatio(window.devicePixelRatio);
 
     container.appendChild(renderer.domElement);
+
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    onWindowResize();
+    window.addEventListener('resize', onWindowResize);
     render();
   })
 
+  function onWindowResize(){
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+  }
+
   function render() {
     //+++FIAT LVX+++
-    //material.uniforms['time'].value = .00025 * (Date.now() - start);
+    material.uniforms['time'].value = .00025 * (Date.now() - start);
     renderer.render(scene, camera);
     requestAnimationFrame(render);
   }
