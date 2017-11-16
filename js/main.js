@@ -20,7 +20,7 @@ window.addEventListener('load', function() {
     uniforms: {
       tSample: {
         type: "t",
-        value: THREE.ImageUtils.loadTexture('texture.png')
+        value: THREE.ImageUtils.loadTexture('explosion.png')
       },
       time: {
         type: "f",
@@ -32,23 +32,32 @@ window.addEventListener('load', function() {
   });
 
   mesh = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(20, 4),
+    new THREE.PlaneGeometry(23, 23, 10, 10),
     material
   );
   scene.add(mesh);
 
-  renderer = new THREE.WebGlRenderer();
+  renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
 
   container.appendChild(renderer.domElement);
+
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  onWindowResize();
+  window.addEventListener('resize', onWindowResize);
   render();
 })
 
+function onWindowResize(){
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+}
+
 function render() {
-  //+++FIAT LVX+++\\
+  //+++FIAT LVX+++
   material.uniforms['time'].value = .00025 * (Date.now() - start);
   renderer.render(scene, camera);
   requestAnimationFrame(render);
-
 }
