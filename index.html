@@ -164,40 +164,40 @@
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     var gui = new dat.GUI();
-    var rParam = {
-      rParam: 1.0
+    var Radius = {
+      Radius: 1.0
     };
-    gui.add(rParam, 'radiusScale').onFinishChange(function(value){
+    gui.add(Radius, 'Radius').onFinishChange(function(value){
       simulationMaterial.uniforms['rM'].value = value;
     });
-    var phiParam = {
-      phiParam: 1.0
+    var Phi = {
+      Phi: 1.0
     };
-    gui.add(phiParam, 'phiScale').onFinishChange(function(value){
+    gui.add(Phi, 'Phi').onFinishChange(function(value){
       simulationMaterial.uniforms['phiM'].value = value;
     });
-    var thetaParam = {
-      thetaParam: 1.0
+    var Theta = {
+      Theta: 1.0
     };
-    gui.add(thetaParam, 'thetaScale').onFinishChange(function(value){
+    gui.add(Theta,'Theta').onFinishChange(function(value){
       simulationMaterial.uniforms['thetaM'].value = value;
     });
-    var xParam = {
-      xParam: 1.0
+    var xScale = {
+      xScale: 1.0
     };
-    gui.add(xParam, 'xScale').onFinishChange(function(value){
+    gui.add(xScale, 'xScale').onFinishChange(function(value){
       simulationMaterial.uniforms['xM'].value = value;
     });
-    var yParam = {
-      yParam: 1.0
+    var yScale = {
+      yScale: 1.0
     };
-    gui.add(yParam, 'yScale').onFinishChange(function(value){
+    gui.add(yScale, 'yScale').onFinishChange(function(value){
       simulationMaterial.uniforms['yM'].value = value;
     });
-    var zParam = {
-      zParam: 1.0
+    var zScale = {
+      zScale: 1.0
     };
-    gui.add(zParam, 'zScale').onFinishChange(function(value){
+    gui.add(zScale, 'zScale').onFinishChange(function(value){
       simulationMaterial.uniforms['zM'].value = value;
     });
     onWindowResize();
