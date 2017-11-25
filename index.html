@@ -71,7 +71,8 @@
   camera,
   start = Date.now(),
   fov = 32,
-  counter = 0;
+  counter = 0,
+  freq=0.025;
 
   window.addEventListener('load', function() {
     container = document.getElementById("container");
@@ -200,6 +201,12 @@
     gui.add(zScale, 'zScale').onFinishChange(function(value){
       simulationMaterial.uniforms['zM'].value = value;
     });
+    var Frequency = {
+      Frequency = freq
+    };
+    gui.add(Frequency, 'Frequency').onFinishChange(function(value){
+      freq = value;
+    });
     onWindowResize();
     window.addEventListener('resize', onWindowResize);
     render();
@@ -245,7 +252,7 @@
     //  simulationMaterial.uniforms['mval'].value = m;
     //}
 
-    simulationMaterial.uniforms['time'].value = .005 * (Date.now() - start);
+    simulationMaterial.uniforms['time'].value = freq * (Date.now() - start);
     requestAnimationFrame(render);
     fbo.update();
     //fbo.particles.rotation.x += Math.PI / 180 * .25;
