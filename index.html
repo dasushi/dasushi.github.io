@@ -59,8 +59,7 @@
 
   <script type="x-shader/x-vertex" id="renderFragShader">
   void main(){
-    vec3 light = vec3(15.0, 15.0, 10.0);
-    gl_FragColor = vec4(vec3(1.), distance(gl_FragCoord.xyz, light) * 0.005);
+    gl_FragColor = vec4(vec3(1.), 0.35);
   }
   </script>
 
@@ -202,7 +201,7 @@
       simulationMaterial.uniforms['zM'].value = value;
     });
     var Frequency = {
-      Frequency = freq
+      Frequency: freq
     };
     gui.add(Frequency, 'Frequency').onFinishChange(function(value){
       freq = value;
