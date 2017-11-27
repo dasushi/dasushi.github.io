@@ -31,17 +31,18 @@
   uniform float xM;
   uniform float yM;
   uniform float zM;
+  uniform float w;
   varying vec2 vUv;
   void main(){
     vec3 pos = texture2D(positions, vUv).rgb;
     //move particle here
     if(dot(pos, pos) > 0.01){
       float r = rM*sqrt(dot(pos,pos));
-      float theta = thetaM*acos(pos.z * 1.5 / r);
+      float theta = thetaM*acos(pos.z / r);
       float phi = phiM*atan(pos.y, pos.x);
-      pos.x = pos.x + xM*cos(phi)*sin(theta)*sin(r-time)/r;
-      pos.y = pos.y + yM*sin(phi)*sin(theta)*sin(r-time)/r;
-      pos.z = pos.z + zM*cos(theta)*sin(r-time)/r;
+      pos.x = pos.x + xM*cos(phi)*sin(theta)*sin(r-w*time)/r;
+      pos.y = pos.y + yM*sin(phi)*sin(theta)*sin(r-w*time)/r;
+      pos.z = pos.z + zM*cos(theta)*sin(r-w*time)/r;
     }
     gl_FragColor = vec4(pos, 1.0);
   }
@@ -59,7 +60,7 @@
 
   <script type="x-shader/x-vertex" id="renderFragShader">
   void main(){
-    gl_FragColor = vec4(vec3(1.), 0.35);
+    gl_FragColor = vec4(vec3(1.), 0.3);
   }
   </script>
 
@@ -89,10 +90,10 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    var height = 512;
-    var width = 512;
-    var depth = 64;
-    var scale = 128.0;
+    var height = 1024;
+    var width = 1024;
+    var depth = 128;
+    var scale = 64.0;
     var randomVals = generateRandomCube(width, height, depth, scale);
     var randomTexture = new THREE.DataTexture(
       randomVals,
@@ -136,6 +137,10 @@
           type: "f",
           value: 1.0
         },
+        w:{
+          type:"f",
+          value: 1.0
+        }
       },
       vertexShader: document.getElementById('simVertexShader').textContent,
       fragmentShader: document.getElementById('simFragShader').textContent
@@ -205,6 +210,12 @@
     };
     gui.add(Frequency, 'Frequency').onFinishChange(function(value){
       freq = value;
+    });
+    var Omega = {
+      Omega: 1.0
+    };
+    gui.add(Omega, 'Omega').onFinishChange(function(value){
+      simulationMaterial.uniforms['w'].value = value;
     });
     onWindowResize();
     window.addEventListener('resize', onWindowResize);
