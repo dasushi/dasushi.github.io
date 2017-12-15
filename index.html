@@ -1,7 +1,7 @@
 <!doctype html>
 <hmtl lang="en">
   <head>
-    <title>Merlin's Perlin Beard! Fireballs!</title>
+    <title>Cymatria - S.:. A..:</title>
     <meta charset="utf-8">
   </head>
 
@@ -92,7 +92,7 @@
 
     var height = 1024;
     var width = 1024;
-    var depth = 128;
+    var depth = 256;
     var scale = 64.0;
     var randomVals = generateRandomCube(width, height, depth, scale);
     var randomTexture = new THREE.DataTexture(
@@ -169,54 +169,58 @@
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
     var gui = new dat.GUI();
+    var waveParams = gui.addFolder('Wave Parameters');
     var Radius = {
       Radius: 1.0
     };
-    gui.add(Radius, 'Radius').onFinishChange(function(value){
+    waveParams.add(Radius, 'Radius').onFinishChange(function(value){
       simulationMaterial.uniforms['rM'].value = value;
     });
     var Phi = {
       Phi: 1.0
     };
-    gui.add(Phi, 'Phi').onFinishChange(function(value){
+    waveParams.add(Phi, 'Phi').onFinishChange(function(value){
       simulationMaterial.uniforms['phiM'].value = value;
     });
     var Theta = {
       Theta: 1.0
     };
-    gui.add(Theta,'Theta').onFinishChange(function(value){
+    waveParams.add(Theta,'Theta').onFinishChange(function(value){
       simulationMaterial.uniforms['thetaM'].value = value;
     });
     var xScale = {
       xScale: 1.0
     };
-    gui.add(xScale, 'xScale').onFinishChange(function(value){
+    var scaleParams = gui.addFolder('Scale Parameters');
+    scaleParams.add(xScale, 'xScale').min(0).onFinishChange(function(value){
       simulationMaterial.uniforms['xM'].value = value;
     });
     var yScale = {
       yScale: 1.0
     };
-    gui.add(yScale, 'yScale').onFinishChange(function(value){
+    scaleParams.add(yScale, 'yScale').min(0).onFinishChange(function(value){
       simulationMaterial.uniforms['yM'].value = value;
     });
     var zScale = {
       zScale: 1.0
     };
-    gui.add(zScale, 'zScale').onFinishChange(function(value){
+    scaleParams.add(zScale, 'zScale').min(0).onFinishChange(function(value){
       simulationMaterial.uniforms['zM'].value = value;
     });
+    var timeParams = gui.addFolder('Time Parameters');
     var Frequency = {
       Frequency: freq
     };
-    gui.add(Frequency, 'Frequency').onFinishChange(function(value){
+    timeParams.add(Frequency, 'Frequency').min(0).onFinishChange(function(value){
       freq = value;
     });
     var Omega = {
       Omega: 1.0
     };
-    gui.add(Omega, 'Omega').onFinishChange(function(value){
+    timeParams.add(Omega, 'Omega').min(0).onFinishChange(function(value){
       simulationMaterial.uniforms['w'].value = value;
     });
+    waveParams.open();
     onWindowResize();
     window.addEventListener('resize', onWindowResize);
     render();
