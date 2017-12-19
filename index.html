@@ -12,7 +12,7 @@
   <script src="js/three.min.js"></script>
   <script src="js/OrbitControls.js"></script>
   <script src="js/dat.gui.min.js"></script>
-  <script src="fbo.js"></script>
+  <script src="js/fbo.js"></script>
 
   <script type="x-shader/x-vertex" id="simVertexShader">
   varying vec2 vUv;
@@ -99,7 +99,7 @@
       randomVals,
       width,
       height,
-      THREE.RGBFormat,
+      THREE.RGBAFormat,
       THREE.FloatType
     );
     randomTexture.needsUpdate = true;
@@ -233,18 +233,14 @@
   }
 
   function generateRandomCube(x, y, z, scale) {
-    var length = x * y * 3;
+    var length = x * y * 4;
     var output = new Float32Array(length);
     for(var i = 0; i < x; i++){
-      for(var j = 0; j < y; j++){
-        /*for(var k = 0; k < z; k++){
-          output[(i*x*y*z+j*x*y+k*x)*3] = (i-(x/2))/(x/scale);
-          output[((i*x*y*z+j*x*y+k*x)*3)+1] = (j-(y/2))/(y/scale);
-          output[((i*x*y*z+j*x*y+k*x)*3)+2] = (k-(z/2))/(z/scale);
-        }*/
-        output[(i*x+j)*3] = (i-(x/2))/(x/scale);
-        output[((i*x+j)*3)+1] = (j-(y/2))/(y/scale);
-        output[((i*x+j)*3)+2] = (Math.random()-.5)/(z/scale);
+      for(var j = 0; j < y; j++){ 
+        output[(i*x+j)*4] = (i-(x/2))/(x/scale);
+        output[((i*x+j)*4)+1] = (j-(y/2))/(y/scale);
+        output[((i*x+j)*4)+2] = (Math.random()-.5)/(z/scale);
+	output[((i*x+j)*4)+3] = 0;
       }
     }
     return output;
@@ -258,19 +254,9 @@
 
   function render() {
     //+++FIAT LVX+++\\
-    //counter = counter + 1;
-    //if(counter%500==0){
-    //  var n = getRandomInt(1,10);
-    //  var m = getRandomInt(1,10);
-    //  simulationMaterial.uniforms['nval'].value = n;
-    //  simulationMaterial.uniforms['mval'].value = m;
-    //}
-
     simulationMaterial.uniforms['time'].value = freq * (Date.now() - start);
     requestAnimationFrame(render);
     fbo.update();
-    //fbo.particles.rotation.x += Math.PI / 180 * .25;
-    //fbo.particles.rotation.y -= Math.PI / 180 * .5;
     renderer.render(scene, camera);
   }
   </script>
